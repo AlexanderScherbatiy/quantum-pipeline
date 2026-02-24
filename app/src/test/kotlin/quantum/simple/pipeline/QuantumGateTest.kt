@@ -1,7 +1,7 @@
 package quantum.simple.pipeline
 
 import org.junit.jupiter.api.Test
-import quantum.QuantumGateX
+import quantum.pipeline.QuantumGateX
 import quantum.assertQuantumGate
 import quantum.complex.ComplexOne
 import quantum.complex.ComplexZero

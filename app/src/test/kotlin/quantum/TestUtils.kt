@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions
 import quantum.complex.CartesianComplex
 import quantum.complex.Complex
 import quantum.complex.ComplexExpression
+import quantum.pipeline.ArrayQuantumGate
+import quantum.pipeline.QuntumGate
 import quantum.simple.complex.SimpleComplexCalculator
 
 private val DELTA = 0.001

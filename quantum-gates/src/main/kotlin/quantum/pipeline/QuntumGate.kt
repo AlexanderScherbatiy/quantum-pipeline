@@ -1,4 +1,4 @@
-package quantum
+package quantum.pipeline
 
 import quantum.complex.ComplexExpression
 import quantum.complex.toComplex
