@@ -3,9 +3,9 @@ package quantum.pipeline
 import quantum.complex.ComplexExpression
 import quantum.complex.toComplex
 
-interface QuntumGate
+interface QuantumGate
 
-data class ArrayQuantumGate(val data: Array<Array<ComplexExpression>>) : QuntumGate
+data class ArrayQuantumGate(val data: Array<Array<ComplexExpression>>) : QuantumGate
 
 val QuantumGateX = ArrayQuantumGate(
     arrayOf(

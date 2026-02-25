@@ -12,7 +12,8 @@ class QuantumGateTest {
     @Test
     fun testPauliGates() {
         assertQuantumGate(
-            QuantumGateX, arrayOf(
+            QuantumGateX,
+            arrayOf(
                 arrayOf(ComplexZero.toResult(), ComplexOne.toResult()),
                 arrayOf(ComplexOne.toResult(), ComplexZero.toResult()),
             )
