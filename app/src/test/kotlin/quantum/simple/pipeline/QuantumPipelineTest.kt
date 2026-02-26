@@ -24,13 +24,18 @@ class QuantumPipelineTest {
             calc.calculate(
                 QuantumPipeline(
                     Qubit(ComplexOne, ComplexZero),
-                    listOf(QuantumGateX)
-                )
-            ),
+                    listOf(QuantumGateX))),
             arrayOf(
                 ComplexResult(0.0, 0.0),
-                ComplexResult(1.0, 0.0)
-            )
-        )
+                ComplexResult(1.0, 0.0)))
+
+        assertQuantumState(
+            calc.calculate(
+                QuantumPipeline(
+                    Qubit(ComplexZero, ComplexOne),
+                    listOf(QuantumGateX))),
+            arrayOf(
+                ComplexResult(1.0, 0.0),
+                ComplexResult(0.0, 0.0)))
     }
 }

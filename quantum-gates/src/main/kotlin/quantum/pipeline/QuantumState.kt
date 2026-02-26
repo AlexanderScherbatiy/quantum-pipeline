@@ -1,9 +1,9 @@
 package quantum.pipeline
 
-import quantum.complex.Complex
+import quantum.complex.ComplexExpression
 
 interface QuantumState
 
-data class Qubit(val c1: Complex, val c2: Complex) : QuantumState
+data class Qubit(val c1: ComplexExpression, val c2: ComplexExpression) : QuantumState
 
 

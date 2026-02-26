@@ -24,17 +24,19 @@ class SimpleQuantumCalculator : QuantumCalculator {
         var result = toVector(pipeline.state)
         for (gate in pipeline.gates) {
             result = calc(math, result, gate)
+                .map({it as ComplexExpression})
+                .toTypedArray()
         }
         return Qubit(result[0], result[1])
     }
 }
 
-private fun toVector(state: QuantumState): Array<Complex> = when (state) {
+private fun toVector(state: QuantumState): Array<ComplexExpression> = when (state) {
     is Qubit -> arrayOf(state.c1, state.c2)
     else -> throw Error("Unknown quantum state: ${state}")
 }
 
-private fun calc(math: SimpleMath, state: Array<Complex>, gate: QuantumGate): Array<Complex> {
+private fun calc(math: SimpleMath, state: Array<ComplexExpression>, gate: QuantumGate): Array<Complex> {
     return math.mul(state, toMatrix(gate))
 }
 

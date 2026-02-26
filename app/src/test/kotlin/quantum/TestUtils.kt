@@ -12,6 +12,8 @@ import quantum.simple.complex.SimpleComplexCalculator
 
 private val DELTA = 0.001
 
+private val complexCalculator = SimpleComplexCalculator()
+
 fun assertComplex(value: Complex, real: Double, image: Double) {
     assertComplex(value.toResult(), real, image)
 }
@@ -25,16 +27,27 @@ private fun assertComplex(value: ComplexResult, real: Double, image: Double) {
     Assertions.assertEquals(image, value.image, DELTA)
 }
 
-fun Complex.toResult() = when (this) {
+fun Complex.toResult(): ComplexResult = when (this) {
     is CartesianComplex -> ComplexResult(this.real, this.image)
     else -> throw Error("Unknown complex type: $this")
 }
 
-data class ComplexResult(val real: Double, val image: Double)
+fun ComplexExpression.toResult(): ComplexResult {
+    return complexCalculator.calculate(this).toResult()
+}
 
-data class QuantumStateResult(val values: Array<ComplexResult>)
+fun assertVector(vector: Array<Complex>, expected: Array<ComplexResult>) {
+    assertVector(vector.map({ it.toResult() }).toTypedArray(), expected)
+}
 
-fun QuantumState.toResult() = when (this) {
+fun assertVector(vector: Array<ComplexResult>, expected: Array<ComplexResult>) {
+    Assertions.assertEquals(vector.size, expected.size)
+    for (i in 0 until vector.size) {
+        assertComplex(vector[i], expected[i])
+    }
+}
+
+fun QuantumState.toResult(): QuantumStateResult = when (this) {
     is Qubit -> QuantumStateResult(arrayOf(this.c1.toResult(), this.c2.toResult()))
     else -> throw Error("Unknown quantum state type: $this")
 }
@@ -65,5 +78,8 @@ private fun QuantumGate.toResult(): QuantumGateResult = when (this) {
 
 private data class QuantumGateResult(val values: List<List<ComplexResult>>)
 
-private val complexCalculator = SimpleComplexCalculator()
 private fun calc(c: ComplexExpression): ComplexResult = complexCalculator.calculate(c).toResult()
+
+data class ComplexResult(val real: Double, val image: Double)
+
+data class QuantumStateResult(val values: Array<ComplexResult>)

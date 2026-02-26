@@ -15,7 +15,7 @@ class SimpleMath {
         this.complexCalc = complexCalc
     }
 
-    fun mul(vector: Array<Complex>, matrix: Array<Array<ComplexExpression>>): Array<Complex> {
+    fun mul(vector: Array<ComplexExpression>, matrix: Array<Array<ComplexExpression>>): Array<Complex> {
         return matrix.map({ row ->
             var c: Complex = ComplexZero
             for (i in 0 until row.size) {
