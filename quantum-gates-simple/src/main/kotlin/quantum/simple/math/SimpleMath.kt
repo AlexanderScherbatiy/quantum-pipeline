@@ -4,8 +4,8 @@ import quantum.complex.Complex
 import quantum.complex.ComplexCalculator
 import quantum.complex.ComplexExpression
 import quantum.complex.ComplexZero
-import quantum.complex.mul
-import quantum.complex.sum
+import quantum.complex.times
+import quantum.complex.plus
 
 class SimpleMath {
 
@@ -21,7 +21,7 @@ class SimpleMath {
             for (i in 0 until row.size) {
                 val s = vector[i]
                 val r = row[i]
-                val expr = c.sum(s.mul(r))
+                val expr = c + s * r
                 c = this.complexCalc.calculate(expr)
             }
             c

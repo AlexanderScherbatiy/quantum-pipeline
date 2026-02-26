@@ -15,5 +15,5 @@ data class ComplexMul(val c1: ComplexExpression, val c2: ComplexExpression) : Co
 
 fun Int.toComplex(): Complex = CartesianComplex(this.toDouble(), 0.0)
 
-fun ComplexExpression.sum(other: ComplexExpression): ComplexExpression = ComplexSum(this, other)
-fun ComplexExpression.mul(other: ComplexExpression): ComplexExpression = ComplexMul(this, other)
+operator fun ComplexExpression.plus(other: ComplexExpression): ComplexExpression = ComplexSum(this, other)
+operator fun ComplexExpression.times(other: ComplexExpression): ComplexExpression = ComplexMul(this, other)

@@ -4,7 +4,7 @@
 package quantum.app
 
 import quantum.complex.CartesianComplex
-import quantum.complex.sum
+import quantum.complex.plus
 import quantum.simple.complex.SimpleComplexCalculator
 
 fun main() {
@@ -12,7 +12,7 @@ fun main() {
     val complex2 = CartesianComplex(3.0, 4.0)
 
     val complexCalculator = SimpleComplexCalculator()
-    val result = complexCalculator.calculate(complex1.sum(complex2))
+    val result = complexCalculator.calculate(complex1 + complex2)
     println("Complex 1: ${complex1}")
     println("Complex 2: ${complex2}")
     println("Sum: ${result}")
