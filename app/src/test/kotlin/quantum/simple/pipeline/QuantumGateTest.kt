@@ -3,8 +3,9 @@ package quantum.simple.pipeline
 import org.junit.jupiter.api.Test
 import quantum.pipeline.QuantumGateX
 import quantum.assertQuantumGate
-import quantum.complex.ComplexOne
-import quantum.complex.ComplexZero
+import quantum.complex.C0
+import quantum.complex.C1
+import quantum.pipeline.QuantumGateControlledNot
 import quantum.toResult
 
 class QuantumGateTest {
@@ -14,8 +15,21 @@ class QuantumGateTest {
         assertQuantumGate(
             QuantumGateX,
             arrayOf(
-                arrayOf(ComplexZero.toResult(), ComplexOne.toResult()),
-                arrayOf(ComplexOne.toResult(), ComplexZero.toResult()),
+                arrayOf(C0.toResult(), C1.toResult()),
+                arrayOf(C1.toResult(), C0.toResult()),
+            )
+        )
+    }
+
+    @Test
+    fun testControlledNot() {
+        assertQuantumGate(
+            QuantumGateControlledNot,
+            arrayOf(
+                arrayOf(C1.toResult(), C0.toResult(), C0.toResult(), C0.toResult()),
+                arrayOf(C0.toResult(), C1.toResult(), C0.toResult(), C0.toResult()),
+                arrayOf(C0.toResult(), C0.toResult(), C0.toResult(), C1.toResult()),
+                arrayOf(C0.toResult(), C0.toResult(), C1.toResult(), C0.toResult()),
             )
         )
     }

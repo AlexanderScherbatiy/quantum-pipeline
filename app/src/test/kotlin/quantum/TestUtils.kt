@@ -6,13 +6,18 @@ import quantum.complex.Complex
 import quantum.complex.ComplexExpression
 import quantum.pipeline.ArrayQuantumGate
 import quantum.pipeline.QuantumGate
-import quantum.pipeline.QuantumState
+import quantum.pipeline.QuantumStateArray
+import quantum.pipeline.QuantumStateExpression
+import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
+import quantum.simple.math.SimpleMath
 
 private val DELTA = 0.001
 
 private val complexCalculator = SimpleComplexCalculator()
+
+private val simpleMath = SimpleMath(complexCalculator)
 
 fun assertComplex(value: Complex, real: Double, image: Double) {
     assertComplex(value.toResult(), real, image)
@@ -47,12 +52,29 @@ fun assertVector(vector: Array<ComplexResult>, expected: Array<ComplexResult>) {
     }
 }
 
-fun QuantumState.toResult(): QuantumStateResult = when (this) {
+fun QuantumStateExpression.toResult(): QuantumStateResult = when (this) {
     is Qubit -> QuantumStateResult(arrayOf(this.c1.toResult(), this.c2.toResult()))
+    is QuantumStateArray -> QuantumStateResult(this.values.map { it.toResult() }.toTypedArray())
+    is QuantumStateTensor -> {
+        val values = this.states
+            .map {
+                val stateResult = it.toResult()
+                stateResult.values
+                    .map { CartesianComplex(it.real, it.image) as Complex }.toTypedArray()
+            }
+            .toTypedArray()
+        val results = simpleMath.tensor(values).map { it.toResult() }.toTypedArray()
+        QuantumStateResult(results)
+    }
+
     else -> throw Error("Unknown quantum state type: $this")
 }
 
-fun assertQuantumState(state: QuantumState, expected: Array<ComplexResult>) {
+fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexExpression>) {
+    assertQuantumState(state, expected.map { it.toResult() }.toTypedArray())
+}
+
+fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexResult>) {
     val result = state.toResult()
     val values = result.values
     Assertions.assertEquals(expected.size, values.size)
@@ -80,6 +102,7 @@ private data class QuantumGateResult(val values: List<List<ComplexResult>>)
 
 private fun calc(c: ComplexExpression): ComplexResult = complexCalculator.calculate(c).toResult()
 
+// TBD: Use CartesianComplex
 data class ComplexResult(val real: Double, val image: Double)
 
 data class QuantumStateResult(val values: Array<ComplexResult>)

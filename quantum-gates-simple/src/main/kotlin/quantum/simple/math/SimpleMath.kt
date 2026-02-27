@@ -15,6 +15,8 @@ class SimpleMath {
         this.complexCalc = complexCalc
     }
 
+    fun calc(complex: ComplexExpression): Complex = complexCalc.calculate(complex)
+
     fun mul(vector: Array<ComplexExpression>, matrix: Array<Array<ComplexExpression>>): Array<Complex> {
         return matrix.map({ row ->
             var c: Complex = ComplexZero
@@ -26,5 +28,13 @@ class SimpleMath {
             }
             c
         }).toTypedArray()
+    }
+
+    fun tensor(values: Array<Array<Complex>>): Array<Complex> {
+        if (values.size != 2) throw Error("Not supported number of values: ${values.size}")
+        val v1 = values[0]
+        val v2 = values[1]
+        return arrayOf(v1[0] * v2[0], v1[0] * v2[1], v1[1] * v2[0], v1[1] * v2[1])
+            .map { complexCalc.calculate(it) }.toTypedArray()
     }
 }

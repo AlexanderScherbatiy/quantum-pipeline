@@ -10,6 +10,9 @@ val ComplexZero = CartesianComplex(0.0, 0.0)
 val ComplexOne = CartesianComplex(1.0, 0.0)
 val ComplexImage = CartesianComplex(0.0, 1.0)
 
+val C0 = ComplexZero
+val C1 = ComplexOne
+
 data class ComplexSum(val c1: ComplexExpression, val c2: ComplexExpression) : ComplexExpression
 data class ComplexMul(val c1: ComplexExpression, val c2: ComplexExpression) : ComplexExpression
 
