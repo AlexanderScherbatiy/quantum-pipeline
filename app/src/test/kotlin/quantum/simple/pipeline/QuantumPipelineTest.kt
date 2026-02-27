@@ -1,8 +1,9 @@
 package quantum.simple.pipeline
 
 import org.junit.jupiter.api.Test
-import quantum.ComplexResult
 import quantum.assertQuantumState
+import quantum.complex.C0
+import quantum.complex.C1
 import quantum.complex.ComplexOne
 import quantum.complex.ComplexZero
 import quantum.pipeline.QuantumCalculator
@@ -27,27 +28,17 @@ class QuantumPipelineTest {
         assertQuantumState(
             calc.calculate(
                 QuantumPipeline(
-                    Qubit(ComplexOne, ComplexZero),
-                    listOf(QuantumGateX)
+                    Qubit(ComplexOne, ComplexZero), listOf(QuantumGateX)
                 )
-            ),
-            arrayOf(
-                ComplexResult(0.0, 0.0),
-                ComplexResult(1.0, 0.0)
-            )
+            ), arrayOf(C0, C1)
         )
 
         assertQuantumState(
             calc.calculate(
                 QuantumPipeline(
-                    Qubit(ComplexZero, ComplexOne),
-                    listOf(QuantumGateX)
+                    Qubit(ComplexZero, ComplexOne), listOf(QuantumGateX)
                 )
-            ),
-            arrayOf(
-                ComplexResult(1.0, 0.0),
-                ComplexResult(0.0, 0.0)
-            )
+            ), arrayOf(C1, C0)
         )
     }
 
@@ -58,30 +49,16 @@ class QuantumPipelineTest {
         assertQuantumState(
             calc.calculate(
                 QuantumPipeline(
-                    QubitZero tensor QubitZero,
-                    listOf(QuantumGateControlledNot)
+                    QubitZero tensor QubitZero, listOf(QuantumGateControlledNot)
                 )
-            ),
-            arrayOf(
-                ComplexResult(1.0, 0.0),
-                ComplexResult(0.0, 0.0),
-                ComplexResult(0.0, 0.0),
-                ComplexResult(0.0, 0.0),
-            )
+            ), arrayOf(C1, C0, C0, C0)
         )
         assertQuantumState(
             calc.calculate(
                 QuantumPipeline(
-                    QubitZero tensor QubitOne,
-                    listOf(QuantumGateControlledNot)
+                    QubitZero tensor QubitOne, listOf(QuantumGateControlledNot)
                 )
-            ),
-            arrayOf(
-                ComplexResult(0.0, 0.0),
-                ComplexResult(1.0, 0.0),
-                ComplexResult(0.0, 0.0),
-                ComplexResult(0.0, 0.0),
-            )
+            ), arrayOf(C0, C1, C0, C0)
         )
     }
 }

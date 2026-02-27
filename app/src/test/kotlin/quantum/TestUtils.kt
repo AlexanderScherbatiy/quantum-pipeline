@@ -19,90 +19,84 @@ private val complexCalculator = SimpleComplexCalculator()
 
 private val simpleMath = SimpleMath(complexCalculator)
 
-fun assertComplex(value: Complex, real: Double, image: Double) {
+fun assertComplex(value: ComplexExpression, real: Double, image: Double) {
     assertComplex(value.toResult(), real, image)
 }
 
-private fun assertComplex(value1: ComplexResult, value2: ComplexResult) {
-    assertComplex(value1, value2.real, value2.image)
+private fun assertComplex(value1: ComplexExpression, value2: ComplexExpression) {
+    val c1 = value1.toCartesian()
+    val c2 = value2.toCartesian()
+    assertComplex(c1, c2.real, c2.image)
 }
 
-private fun assertComplex(value: ComplexResult, real: Double, image: Double) {
+private fun assertComplex(value: CartesianComplex, real: Double, image: Double) {
     Assertions.assertEquals(real, value.real, DELTA)
     Assertions.assertEquals(image, value.image, DELTA)
 }
 
-fun Complex.toResult(): ComplexResult = when (this) {
-    is CartesianComplex -> ComplexResult(this.real, this.image)
+fun ComplexExpression.toCartesian(): CartesianComplex = when (val c = simpleMath.calc(this)) {
+    is CartesianComplex -> c
     else -> throw Error("Unknown complex type: $this")
 }
 
-fun ComplexExpression.toResult(): ComplexResult {
-    return complexCalculator.calculate(this).toResult()
+fun ComplexExpression.toResult(): CartesianComplex {
+    return complexCalculator.calculate(this).toCartesian()
 }
 
-fun assertVector(vector: Array<Complex>, expected: Array<ComplexResult>) {
+fun assertVector(vector: Array<Complex>, expected: Array<CartesianComplex>) {
     assertVector(vector.map({ it.toResult() }).toTypedArray(), expected)
 }
 
-fun assertVector(vector: Array<ComplexResult>, expected: Array<ComplexResult>) {
+fun assertVector(vector: Array<ComplexExpression>, expected: Array<ComplexExpression>) {
     Assertions.assertEquals(vector.size, expected.size)
     for (i in 0 until vector.size) {
         assertComplex(vector[i], expected[i])
     }
 }
 
-fun QuantumStateExpression.toResult(): QuantumStateResult = when (this) {
-    is Qubit -> QuantumStateResult(arrayOf(this.c1.toResult(), this.c2.toResult()))
-    is QuantumStateArray -> QuantumStateResult(this.values.map { it.toResult() }.toTypedArray())
+fun QuantumStateExpression.toResult(): Array<CartesianComplex> = when (this) {
+    is Qubit -> arrayOf(this.c1.toResult(), this.c2.toResult())
+    is QuantumStateArray -> this.values.map { it.toResult() }.toTypedArray()
     is QuantumStateTensor -> {
         val values = this.states
             .map {
-                val stateResult = it.toResult()
-                stateResult.values
+                it.toResult()
                     .map { CartesianComplex(it.real, it.image) as Complex }.toTypedArray()
             }
             .toTypedArray()
         val results = simpleMath.tensor(values).map { it.toResult() }.toTypedArray()
-        QuantumStateResult(results)
+        results
     }
 
     else -> throw Error("Unknown quantum state type: $this")
 }
 
 fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexExpression>) {
-    assertQuantumState(state, expected.map { it.toResult() }.toTypedArray())
-}
-
-fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexResult>) {
-    val result = state.toResult()
-    val values = result.values
+    val values = state.toResult()
     Assertions.assertEquals(expected.size, values.size)
     for (i in 0..<values.size) {
         assertComplex(values[i], expected[i])
     }
 }
 
-fun assertQuantumGate(gate: QuantumGate, matrix: Array<Array<ComplexResult>>) {
-    val res = gate.toResult()
+fun assertQuantumGate(gate: QuantumGate, matrix: Array<Array<ComplexExpression>>) {
+    val values = gate.toMatrix()
 
     matrix.forEachIndexed { rowIndex, row ->
         row.forEachIndexed { columnIndex, value ->
-            assertComplex(value, res.values[rowIndex][columnIndex])
+            assertComplex(value, values[rowIndex][columnIndex])
         }
     }
 }
 
-private fun QuantumGate.toResult(): QuantumGateResult = when (this) {
-    is ArrayQuantumGate -> QuantumGateResult(this.data.map({ row -> row.map({ elem -> calc(elem) }) }))
+private fun QuantumGate.toMatrix(): Array<Array<CartesianComplex>> = when (this) {
+    is ArrayQuantumGate -> this.data
+        .map { row ->
+            row
+                .map { elem -> calc(elem) }.toTypedArray()
+        }.toTypedArray()
+
     else -> throw Error("Unknown gate type: $this")
 }
 
-private data class QuantumGateResult(val values: List<List<ComplexResult>>)
-
-private fun calc(c: ComplexExpression): ComplexResult = complexCalculator.calculate(c).toResult()
-
-// TBD: Use CartesianComplex
-data class ComplexResult(val real: Double, val image: Double)
-
-data class QuantumStateResult(val values: Array<ComplexResult>)
+private fun calc(c: ComplexExpression): CartesianComplex = complexCalculator.calculate(c).toResult()
