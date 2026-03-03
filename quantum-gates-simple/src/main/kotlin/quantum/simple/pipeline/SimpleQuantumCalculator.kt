@@ -32,7 +32,7 @@ class SimpleQuantumCalculator : QuantumCalculator {
         }
         if (result.size == 2) return Qubit(result[0], result[1])
         // TBD:
-        return QuantumStateArray(result.map{it as ComplexExpression}.toTypedArray())
+        return QuantumStateArray(result.map { it as ComplexExpression }.toTypedArray())
     }
 
     private fun toVector(state: QuantumStateExpression): Array<Complex> = when (state) {
@@ -51,5 +51,6 @@ private fun calc(math: SimpleMath, state: Array<Complex>, gate: QuantumGate): Ar
 
 private fun toMatrix(gate: QuantumGate): Array<Array<ComplexExpression>> = when (gate) {
     is ArrayQuantumGate -> gate.data
+    // is QuantumBlock -> // TBD
     else -> throw Error("Unknown quantum gate: ${gate}")
 }
