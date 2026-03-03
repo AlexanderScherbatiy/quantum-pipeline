@@ -13,6 +13,8 @@ import quantum.pipeline.QuantumStateExpression
 import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
+import quantum.simple.math.ComplexExpressionMatrix
+import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
 class SimpleQuantumCalculator : QuantumCalculator {
@@ -35,7 +37,7 @@ class SimpleQuantumCalculator : QuantumCalculator {
         return QuantumStateArray(result.map { it as ComplexExpression }.toTypedArray())
     }
 
-    private fun toVector(state: QuantumStateExpression): Array<Complex> = when (state) {
+    private fun toVector(state: QuantumStateExpression): ComplexVector = when (state) {
         is Qubit -> arrayOf(math.calc(state.c1), math.calc(state.c2))
         is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) }.toTypedArray())
         else -> throw Error("Unknown quantum state: ${state}")
@@ -43,13 +45,13 @@ class SimpleQuantumCalculator : QuantumCalculator {
 }
 
 
-private fun calc(math: SimpleMath, state: Array<Complex>, gate: QuantumGate): Array<Complex> {
+private fun calc(math: SimpleMath, state: ComplexVector, gate: QuantumGate): ComplexVector {
     // TBD
     // return math.mul(state, toMatrix(gate))
     return math.mul(state.map { it as Complex }.toTypedArray(), toMatrix(gate))
 }
 
-private fun toMatrix(gate: QuantumGate): Array<Array<ComplexExpression>> = when (gate) {
+private fun toMatrix(gate: QuantumGate): ComplexExpressionMatrix = when (gate) {
     is ArrayQuantumGate -> gate.data
     // is QuantumBlock -> // TBD
     else -> throw Error("Unknown quantum gate: ${gate}")

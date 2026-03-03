@@ -7,6 +7,11 @@ import quantum.complex.ComplexZero
 import quantum.complex.times
 import quantum.complex.plus
 
+typealias ComplexExpressionVector = Array<ComplexExpression>
+typealias ComplexVector = Array<Complex>
+typealias ComplexMatrix = Array<Array<Complex>>
+typealias ComplexExpressionMatrix = Array<Array<ComplexExpression>>
+
 class SimpleMath {
 
     private val complexCalc: ComplexCalculator
@@ -17,7 +22,7 @@ class SimpleMath {
 
     fun calc(complex: ComplexExpression): Complex = complexCalc.calculate(complex)
 
-    fun mul(vector: Array<ComplexExpression>, matrix: Array<Array<ComplexExpression>>): Array<Complex> {
+    fun mul(vector: ComplexExpressionVector, matrix: ComplexExpressionMatrix): Array<Complex> {
         return matrix.map({ row ->
             var c: Complex = ComplexZero
             for (i in 0 until row.size) {
@@ -30,7 +35,7 @@ class SimpleMath {
         }).toTypedArray()
     }
 
-    fun tensor(values: Array<Array<Complex>>): Array<Complex> {
+    fun tensor(values: Array<ComplexVector>): ComplexVector {
         if (values.size != 2) throw Error("Not supported number of values: ${values.size}")
         val v1 = values[0]
         val v2 = values[1]

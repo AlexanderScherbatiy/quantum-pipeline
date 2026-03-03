@@ -11,6 +11,9 @@ import quantum.pipeline.QuantumStateExpression
 import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
+import quantum.simple.math.ComplexExpressionMatrix
+import quantum.simple.math.ComplexExpressionVector
+import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
 private val DELTA = 0.001
@@ -43,11 +46,11 @@ fun ComplexExpression.toResult(): CartesianComplex {
     return complexCalculator.calculate(this).toCartesian()
 }
 
-fun assertVector(vector: Array<Complex>, expected: Array<CartesianComplex>) {
+fun assertVector(vector: ComplexVector, expected: Array<CartesianComplex>) {
     assertVector(vector.map({ it.toResult() }).toTypedArray(), expected)
 }
 
-fun assertVector(vector: Array<ComplexExpression>, expected: Array<ComplexExpression>) {
+fun assertVector(vector: Array<ComplexExpression>, expected: ComplexExpressionVector) {
     Assertions.assertEquals(vector.size, expected.size)
     for (i in 0 until vector.size) {
         assertComplex(vector[i], expected[i])
@@ -71,7 +74,7 @@ fun QuantumStateExpression.toResult(): Array<CartesianComplex> = when (this) {
     else -> throw Error("Unknown quantum state type: $this")
 }
 
-fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexExpression>) {
+fun assertQuantumState(state: QuantumStateExpression, expected: ComplexExpressionVector) {
     val values = state.toResult()
     Assertions.assertEquals(expected.size, values.size)
     for (i in 0..<values.size) {
@@ -79,7 +82,7 @@ fun assertQuantumState(state: QuantumStateExpression, expected: Array<ComplexExp
     }
 }
 
-fun assertQuantumGate(gate: QuantumGate, matrix: Array<Array<ComplexExpression>>) {
+fun assertQuantumGate(gate: QuantumGate, matrix: ComplexExpressionMatrix) {
     val values = gate.toMatrix()
 
     matrix.forEachIndexed { rowIndex, row ->
