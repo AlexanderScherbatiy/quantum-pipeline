@@ -13,6 +13,7 @@ import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
 import quantum.simple.math.ComplexExpressionMatrix
 import quantum.simple.math.ComplexExpressionVector
+import quantum.simple.math.ComplexMatrix
 import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
@@ -54,6 +55,26 @@ fun assertVector(vector: Array<ComplexExpression>, expected: ComplexExpressionVe
     Assertions.assertEquals(vector.size, expected.size)
     for (i in 0 until vector.size) {
         assertComplex(vector[i], expected[i])
+    }
+}
+
+fun assertMatrix(matrix: ComplexExpressionMatrix, expected: ComplexMatrix) {
+    assertMatrix(
+        matrix.map { row -> row.map { complexCalculator.calculate(it) }.toTypedArray() }.toTypedArray(),
+        expected
+    )
+}
+
+fun assertMatrix(matrix: ComplexMatrix, expected: ComplexMatrix) {
+    if (matrix.size != expected.size) throw Error("Matrix rows ${matrix.size} != ${expected.size}")
+    if (matrix[0].size != expected[0].size) throw Error("Matrix columns ${matrix[0].size} != ${expected[0].size}")
+
+    for (i in matrix.indices) {
+        val row1 = matrix[i]
+        val row2 = expected[i]
+        for (j in row1.indices) {
+            if (row1[j] != row2[j]) throw Error("Matrix elem[$i][$j] ${row1[j]} != ${row2[j]}")
+        }
     }
 }
 
