@@ -14,6 +14,7 @@ import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
 import quantum.simple.math.ComplexExpressionMatrix
+import quantum.simple.math.ComplexExpressionVector
 import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
@@ -39,7 +40,7 @@ class SimpleQuantumCalculator : QuantumCalculator {
 
     private fun toVector(state: QuantumStateExpression): ComplexVector = when (state) {
         is Qubit -> arrayOf(math.calc(state.c1), math.calc(state.c2))
-        is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) }.toTypedArray())
+        is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) as ComplexExpressionVector }.toTypedArray())
         else -> throw Error("Unknown quantum state: ${state}")
     }
 }

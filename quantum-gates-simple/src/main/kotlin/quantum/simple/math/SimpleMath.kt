@@ -35,7 +35,7 @@ class SimpleMath {
         }).toTypedArray()
     }
 
-    fun tensor(values: Array<ComplexVector>): ComplexVector {
+    fun tensor(values: Array<ComplexExpressionVector>): ComplexVector {
         if (values.size != 2) throw Error("Not supported number of values: ${values.size}")
         val v1 = values[0]
         val v2 = values[1]

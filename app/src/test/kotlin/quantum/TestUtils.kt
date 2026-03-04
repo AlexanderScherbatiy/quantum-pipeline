@@ -64,7 +64,7 @@ fun QuantumStateExpression.toResult(): Array<CartesianComplex> = when (this) {
         val values = this.states
             .map {
                 it.toResult()
-                    .map { CartesianComplex(it.real, it.image) as Complex }.toTypedArray()
+                    .map { CartesianComplex(it.real, it.image) as ComplexExpression }.toTypedArray()
             }
             .toTypedArray()
         val results = simpleMath.tensor(values).map { it.toResult() }.toTypedArray()
