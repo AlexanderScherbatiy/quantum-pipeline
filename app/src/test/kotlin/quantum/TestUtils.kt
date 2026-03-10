@@ -2,7 +2,6 @@ package quantum
 
 import org.junit.jupiter.api.Assertions
 import quantum.complex.CartesianComplex
-import quantum.complex.Complex
 import quantum.complex.ComplexExpression
 import quantum.pipeline.ArrayQuantumGate
 import quantum.pipeline.QuantumGate
@@ -47,11 +46,7 @@ fun ComplexExpression.toResult(): CartesianComplex {
     return complexCalculator.calculate(this).toCartesian()
 }
 
-fun assertVector(vector: ComplexVector, expected: Array<CartesianComplex>) {
-    assertVector(vector.map({ it.toResult() }).toTypedArray(), expected)
-}
-
-fun assertVector(vector: Array<ComplexExpression>, expected: ComplexExpressionVector) {
+fun assertVector(vector: ComplexVector, expected: ComplexVector) {
     Assertions.assertEquals(vector.size, expected.size)
     for (i in 0 until vector.size) {
         assertComplex(vector[i], expected[i])

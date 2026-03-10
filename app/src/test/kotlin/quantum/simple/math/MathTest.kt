@@ -2,6 +2,7 @@ package quantum.simple.math;
 
 import org.junit.jupiter.api.Test;
 import quantum.assertMatrix
+import quantum.assertVector
 import quantum.complex.Complex
 import quantum.complex.ComplexExpression
 import quantum.complex.ComplexOne
@@ -21,11 +22,16 @@ class MathTest {
     @Test
     fun testVectorMatrixMul() {
         val math = getMath()
-        val vector = arrayOf<ComplexExpression>(ComplexZero, ComplexOne)
+        val vector = arrayOf(1.e(), 2.e())
         val matrix = arrayOf(
-            arrayOf<ComplexExpression>(ComplexOne, ComplexZero), arrayOf<ComplexExpression>(ComplexZero, ComplexOne)
+            arrayOf(3.e(), 4.e()),
+            arrayOf(5.e(), 6.e()),
         )
-        val result = math.mul(vector, matrix)
+
+        assertVector(
+            math.mul(vector, matrix),
+            arrayOf(11.c(), 17.c()),
+        )
     }
 
     @Test
