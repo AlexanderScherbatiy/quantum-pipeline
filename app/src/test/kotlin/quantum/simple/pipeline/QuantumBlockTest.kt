@@ -8,13 +8,14 @@ import quantum.complex.CI
 import quantum.complex.unaryMinus
 import quantum.pipeline.QuantumBlock
 import quantum.pipeline.QuantumCalculator
+import quantum.pipeline.QuantumGateControlledNot
 import quantum.pipeline.QuantumGateX
 import quantum.pipeline.QuantumGateY
 import quantum.pipeline.QuantumPipeline
 import quantum.pipeline.QubitOne
 import quantum.pipeline.QubitZero
 import quantum.pipeline.tensor
-import quantum.pipeline.toElem
+import quantum.pipeline.blockElem
 
 
 class QuantumBlockTest {
@@ -29,14 +30,25 @@ class QuantumBlockTest {
         val calc = getCalculator()
         val xy = QuantumBlock(
             2, listOf(
-                QuantumGateX.toElem(0),
-                QuantumGateY.toElem(1),
+                QuantumGateX.blockElem(0),
+                QuantumGateY.blockElem(1),
             )
         )
         assertQuantumState(
             calc.calculate(
                 QuantumPipeline(QubitZero tensor QubitOne, listOf(xy))
             ), arrayOf(C0, C0, -CI, C0)
+        )
+    }
+
+    @Test
+    @Disabled
+    fun testMAJ() {
+        val calc = getCalculator()
+        val majBlock = QuantumBlock(
+            3, listOf(
+                QuantumGateControlledNot.blockElem(2, 1)
+            )
         )
     }
 }

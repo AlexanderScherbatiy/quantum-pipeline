@@ -3,7 +3,11 @@ package quantum.simple.pipeline
 import quantum.complex.Complex
 import quantum.complex.ComplexCalculator
 import quantum.complex.ComplexExpression
+import quantum.math.array.ComplexExpressionVector
+import quantum.math.array.ComplexVector
 import quantum.pipeline.ArrayQuantumGate
+import quantum.pipeline.QuantumBlock
+import quantum.pipeline.QuantumBlockElem
 import quantum.pipeline.QuantumCalculator
 import quantum.pipeline.QuantumGate
 import quantum.pipeline.QuantumPipeline
@@ -14,8 +18,6 @@ import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
 import quantum.simple.math.ComplexExpressionMatrix
-import quantum.simple.math.ComplexExpressionVector
-import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
 class SimpleQuantumCalculator : QuantumCalculator {
@@ -40,7 +42,9 @@ class SimpleQuantumCalculator : QuantumCalculator {
 
     private fun toVector(state: QuantumStateExpression): ComplexVector = when (state) {
         is Qubit -> arrayOf(math.calc(state.c1), math.calc(state.c2))
-        is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) as ComplexExpressionVector }.toTypedArray())
+        is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) as ComplexExpressionVector }
+            .toTypedArray())
+
         else -> throw Error("Unknown quantum state: ${state}")
     }
 }
@@ -49,11 +53,22 @@ class SimpleQuantumCalculator : QuantumCalculator {
 private fun calc(math: SimpleMath, state: ComplexVector, gate: QuantumGate): ComplexVector {
     // TBD
     // return math.mul(state, toMatrix(gate))
-    return math.mul(state.map { it as Complex }.toTypedArray(), toMatrix(gate))
+    return math.mul(state.map { it as Complex }.toTypedArray(), toMatrix(math, gate))
 }
 
-private fun toMatrix(gate: QuantumGate): ComplexExpressionMatrix = when (gate) {
+private fun toMatrix(math: SimpleMath, gate: QuantumGate): ComplexExpressionMatrix = when (gate) {
     is ArrayQuantumGate -> gate.data
-    // is QuantumBlock -> // TBD
+//    is QuantumBlock -> quantumBlockToMatrix(math, gate)
     else -> throw Error("Unknown quantum gate: ${gate}")
 }
+
+/*
+private fun quantumBlockToMatrix(math: SimpleMath, block: QuantumBlock): ComplexExpressionMatrix {
+    return block.elems
+        .map({ quantumBlockElemToMatrix(block.size, it) })
+        .reduce { acc, matrix -> math.mul(acc, matrix) }
+}
+
+private fun quantumBlockElemToMatrix(size: Int, elem: QuantumBlockElem): ComplexExpressionMatrix {
+}
+*/

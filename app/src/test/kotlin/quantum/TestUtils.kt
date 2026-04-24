@@ -3,6 +3,8 @@ package quantum
 import org.junit.jupiter.api.Assertions
 import quantum.complex.CartesianComplex
 import quantum.complex.ComplexExpression
+import quantum.math.array.ComplexExpressionVector
+import quantum.math.array.ComplexVector
 import quantum.pipeline.ArrayQuantumGate
 import quantum.pipeline.QuantumGate
 import quantum.pipeline.QuantumStateArray
@@ -11,9 +13,7 @@ import quantum.pipeline.QuantumStateTensor
 import quantum.pipeline.Qubit
 import quantum.simple.complex.SimpleComplexCalculator
 import quantum.simple.math.ComplexExpressionMatrix
-import quantum.simple.math.ComplexExpressionVector
 import quantum.simple.math.ComplexMatrix
-import quantum.simple.math.ComplexVector
 import quantum.simple.math.SimpleMath
 
 private val DELTA = 0.001
@@ -55,8 +55,7 @@ fun assertVector(vector: ComplexVector, expected: ComplexVector) {
 
 fun assertMatrix(matrix: ComplexExpressionMatrix, expected: ComplexMatrix) {
     assertMatrix(
-        matrix.map { row -> row.map { complexCalculator.calculate(it) }.toTypedArray() }.toTypedArray(),
-        expected
+        matrix.map { row -> row.map { complexCalculator.calculate(it) }.toTypedArray() }.toTypedArray(), expected
     )
 }
 
@@ -77,12 +76,9 @@ fun QuantumStateExpression.toResult(): Array<CartesianComplex> = when (this) {
     is Qubit -> arrayOf(this.c1.toResult(), this.c2.toResult())
     is QuantumStateArray -> this.values.map { it.toResult() }.toTypedArray()
     is QuantumStateTensor -> {
-        val values = this.states
-            .map {
-                it.toResult()
-                    .map { CartesianComplex(it.real, it.image) as ComplexExpression }.toTypedArray()
-            }
-            .toTypedArray()
+        val values = this.states.map {
+                it.toResult().map { CartesianComplex(it.real, it.image) as ComplexExpression }.toTypedArray()
+            }.toTypedArray()
         val results = simpleMath.tensor(values).map { it.toResult() }.toTypedArray()
         results
     }
@@ -109,13 +105,18 @@ fun assertQuantumGate(gate: QuantumGate, matrix: ComplexExpressionMatrix) {
 }
 
 private fun QuantumGate.toMatrix(): Array<Array<CartesianComplex>> = when (this) {
-    is ArrayQuantumGate -> this.data
-        .map { row ->
-            row
-                .map { elem -> calc(elem) }.toTypedArray()
+    is ArrayQuantumGate -> this.data.map { row ->
+            row.map { elem -> calc(elem) }.toTypedArray()
         }.toTypedArray()
 
     else -> throw Error("Unknown gate type: $this")
 }
 
 private fun calc(c: ComplexExpression): CartesianComplex = complexCalculator.calculate(c).toResult()
+
+fun assertComplexVector(expected: ComplexVector, vector: ComplexVector) {
+    Assertions.assertEquals(expected.size, vector.size)
+    for (i in 0..<expected.size) {
+        assertComplex(expected[i], vector[i])
+    }
+}

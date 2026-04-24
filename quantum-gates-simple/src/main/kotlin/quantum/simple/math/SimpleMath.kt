@@ -1,9 +1,9 @@
 package quantum.simple.math
 
 import quantum.complex.*
+import quantum.math.array.ComplexExpressionVector
+import quantum.math.array.ComplexVector
 
-typealias ComplexExpressionVector = Array<ComplexExpression>
-typealias ComplexVector = Array<Complex>
 typealias ComplexMatrix = Array<Array<Complex>>
 typealias ComplexExpressionMatrix = Array<Array<ComplexExpression>>
 
@@ -28,6 +28,14 @@ class SimpleMath {
             }
             c
         }).toTypedArray()
+    }
+
+    fun mul(matrix1: ComplexExpressionMatrix, matrix2: ComplexExpressionMatrix): ComplexExpressionMatrix {
+        return Array(matrix1.size) {
+            n -> Array(matrix2[0].size) {
+                // TBD:
+                j -> ComplexOne
+            } }
     }
 
     fun tensor(vectors: Array<ComplexExpressionVector>): ComplexVector {

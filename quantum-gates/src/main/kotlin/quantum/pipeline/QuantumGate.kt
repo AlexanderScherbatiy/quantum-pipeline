@@ -44,4 +44,4 @@ val QuantumGateControlledNot = ArrayQuantumGate(
 data class QuantumBlockElem(val gate: QuantumGate, val indices: List<Int>)
 data class QuantumBlock(val size: Int, val elems: List<QuantumBlockElem>) : QuantumGate
 
-fun QuantumGate.toElem(vararg indices: Int): QuantumBlockElem = QuantumBlockElem(this, indices.toList())
+fun QuantumGate.blockElem(vararg indices: Int): QuantumBlockElem = QuantumBlockElem(this, indices.toList())
