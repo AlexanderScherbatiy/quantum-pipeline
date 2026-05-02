@@ -9,6 +9,16 @@ object BitOne : BitExpression
 
 fun Boolean.toBit() = if (this) BitOne else BitZero
 
+fun Array<Boolean>.toIndex(): Int {
+    var index = 0
+    for (i in this.size - 1 downTo 0) {
+        val bit = this[i]
+        index = index shl 1
+        if (bit) index++
+    }
+    return index
+}
+
 class BitIterator(private val size: Int) : Iterator<Array<Boolean>> {
 
     var finished = size == 0
