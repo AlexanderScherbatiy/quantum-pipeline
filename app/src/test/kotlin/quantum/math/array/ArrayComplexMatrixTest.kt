@@ -2,10 +2,11 @@ package quantum.math.array;
 
 import org.junit.jupiter.api.Test;
 import quantum.assertComplexVector
+import quantum.complex.C0
+import quantum.complex.C1
+import quantum.complex.CartesianComplex
 import quantum.complex.ComplexCalculator
 import quantum.complex.ComplexExpression
-import quantum.complex.ComplexOne
-import quantum.complex.ComplexZero
 import quantum.simple.complex.SimpleComplexCalculator
 
 class ArrayComplexMatrixTest {
@@ -17,8 +18,12 @@ class ArrayComplexMatrixTest {
     @Test
     fun testMatrixVectorMul() {
         val calc = getCalc()
-        val v = arrayOf<ComplexExpression>(ComplexZero, ComplexZero, ComplexOne)
-        val m = arrayOf<ComplexExpression>(ComplexZero, ComplexOne, ComplexZero)
-        assertComplexVector(arrayOf(ComplexZero, ComplexOne, ComplexOne), v1.sum(v2, calc))
+        val v = arrayOf<ComplexExpression>(C1, C0, C1)
+        val m = arrayOf<Array<ComplexExpression>>(
+            arrayOf(C1, C0, C1),
+            arrayOf(C0, C1, C1),
+            arrayOf(C1, C1, C0),
+        )
+        assertComplexVector(arrayOf(CartesianComplex(2.0, 0.0), C1, C1), m.mul(v, calc))
     }
 }

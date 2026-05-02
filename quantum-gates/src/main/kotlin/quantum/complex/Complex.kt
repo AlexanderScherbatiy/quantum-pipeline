@@ -4,7 +4,7 @@ interface ComplexExpression
 
 interface Complex : ComplexExpression
 
-data class CartesianComplex(val real: Double, val image: Double) : Complex
+data class CartesianComplex(val real: Double, val image: Double = 0.0) : Complex
 
 val ComplexZero = CartesianComplex(0.0, 0.0)
 val ComplexOne = CartesianComplex(1.0, 0.0)
