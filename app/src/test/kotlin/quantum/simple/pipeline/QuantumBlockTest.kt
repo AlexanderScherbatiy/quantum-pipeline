@@ -17,7 +17,6 @@ import quantum.pipeline.QubitZero
 import quantum.pipeline.tensor
 import quantum.pipeline.blockElem
 
-
 class QuantumBlockTest {
 
     fun getCalculator(): QuantumCalculator {
@@ -49,6 +48,12 @@ class QuantumBlockTest {
             3, listOf(
                 QuantumGateControlledNot.blockElem(2, 1)
             )
+        )
+        val state = QubitOne tensor QubitOne tensor QubitOne
+        assertQuantumState(
+            calc.calculate(
+                QuantumPipeline(state, listOf(majBlock))
+            ), arrayOf(C0, C0, -CI, C0)
         )
     }
 }

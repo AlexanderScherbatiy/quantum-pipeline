@@ -1,10 +1,12 @@
 package quantum.simple.pipeline
 
+import quantum.complex.C0
 import quantum.complex.Complex
 import quantum.complex.ComplexCalculator
 import quantum.complex.ComplexExpression
 import quantum.math.array.ComplexExpressionVector
 import quantum.math.array.ComplexVector
+import quantum.math.array.tensor
 import quantum.pipeline.ArrayQuantumGate
 import quantum.pipeline.QuantumBlock
 import quantum.pipeline.QuantumBlockElem
@@ -42,9 +44,9 @@ class SimpleQuantumCalculator : QuantumCalculator {
 
     private fun toVector(state: QuantumStateExpression): ComplexVector = when (state) {
         is Qubit -> arrayOf(math.calc(state.c1), math.calc(state.c2))
-        is QuantumStateTensor -> math.tensor(state.states.map { this.toVector(it) as ComplexExpressionVector }
-            .toTypedArray())
-
+        is QuantumStateTensor ->
+            (this.toVector(state.state1) as ComplexExpressionVector).tensor(
+                this.toVector(state.state2) as ComplexExpressionVector, this.math.complexCalc)
         else -> throw Error("Unknown quantum state: ${state}")
     }
 }
@@ -58,11 +60,11 @@ private fun calc(math: SimpleMath, state: ComplexVector, gate: QuantumGate): Com
 
 private fun toMatrix(math: SimpleMath, gate: QuantumGate): ComplexExpressionMatrix = when (gate) {
     is ArrayQuantumGate -> gate.data
-//    is QuantumBlock -> quantumBlockToMatrix(math, gate)
+    is QuantumBlock -> quantumBlockToMatrix(math, gate)
     else -> throw Error("Unknown quantum gate: ${gate}")
 }
 
-/*
+///*
 private fun quantumBlockToMatrix(math: SimpleMath, block: QuantumBlock): ComplexExpressionMatrix {
     return block.elems
         .map({ quantumBlockElemToMatrix(block.size, it) })
@@ -70,5 +72,10 @@ private fun quantumBlockToMatrix(math: SimpleMath, block: QuantumBlock): Complex
 }
 
 private fun quantumBlockElemToMatrix(size: Int, elem: QuantumBlockElem): ComplexExpressionMatrix {
+
+    val matrixSize = 2 shl size
+    val matrix = Array(matrixSize) { Array(matrixSize) { C0 as ComplexExpression } }
+
+    return matrix
 }
-*/
+//*/

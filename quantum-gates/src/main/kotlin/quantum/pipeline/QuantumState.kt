@@ -15,7 +15,7 @@ val QubitOne = Qubit(C0, C1)
 
 data class QuantumStateArray(val values: Array<ComplexExpression>) : QuantumState
 
-data class QuantumStateTensor(val states: Array<QuantumStateExpression>) : QuantumStateExpression
+data class QuantumStateTensor(val state1: QuantumStateExpression, val state2: QuantumStateExpression) : QuantumStateExpression
 
 infix fun QuantumStateExpression.tensor(other: QuantumStateExpression): QuantumStateExpression =
-    QuantumStateTensor(arrayOf(this, other))
+    QuantumStateTensor(this, other)

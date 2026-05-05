@@ -9,7 +9,7 @@ typealias ComplexExpressionMatrix = Array<Array<ComplexExpression>>
 
 class SimpleMath {
 
-    private val complexCalc: ComplexCalculator
+    val complexCalc: ComplexCalculator
 
     constructor(complexCalc: ComplexCalculator) {
         this.complexCalc = complexCalc
@@ -31,20 +31,13 @@ class SimpleMath {
     }
 
     fun mul(matrix1: ComplexExpressionMatrix, matrix2: ComplexExpressionMatrix): ComplexExpressionMatrix {
-        return Array(matrix1.size) {
-            n -> Array(matrix2[0].size) {
+        return Array(matrix1.size) { n ->
+            Array(matrix2[0].size) {
                 // TBD:
-                j -> ComplexOne
-            } }
-    }
-
-    fun tensor(vectors: Array<ComplexExpressionVector>): ComplexVector {
-        if (vectors.size != 2) throw Error("Not supported number of values: ${vectors.size}")
-        val v1 = vectors[0]
-        val v2 = vectors[1]
-        return arrayOf(v1[0] * v2[0], v1[0] * v2[1], v1[1] * v2[0], v1[1] * v2[1])
-            .map { complexCalc.calculate(it) }
-            .toTypedArray()
+                    j ->
+                ComplexOne
+            }
+        }
     }
 
     fun tensor(matrices: Array<ComplexExpressionMatrix>): ComplexMatrix {

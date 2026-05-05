@@ -6,8 +6,6 @@ import quantum.complex.C0
 import quantum.complex.C1
 import quantum.complex.ComplexCalculator
 import quantum.complex.ComplexExpression
-import quantum.complex.ComplexOne
-import quantum.complex.ComplexZero
 import quantum.simple.complex.SimpleComplexCalculator
 
 class ArrayComplexVectorTest {

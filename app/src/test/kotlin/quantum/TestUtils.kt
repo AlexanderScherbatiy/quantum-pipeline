@@ -5,6 +5,7 @@ import quantum.complex.CartesianComplex
 import quantum.complex.ComplexExpression
 import quantum.math.array.ComplexExpressionVector
 import quantum.math.array.ComplexVector
+import quantum.math.array.tensor
 import quantum.pipeline.ArrayQuantumGate
 import quantum.pipeline.QuantumGate
 import quantum.pipeline.QuantumStateArray
@@ -76,13 +77,10 @@ fun QuantumStateExpression.toResult(): Array<CartesianComplex> = when (this) {
     is Qubit -> arrayOf(this.c1.toResult(), this.c2.toResult())
     is QuantumStateArray -> this.values.map { it.toResult() }.toTypedArray()
     is QuantumStateTensor -> {
-        val values = this.states.map {
-                it.toResult().map { CartesianComplex(it.real, it.image) as ComplexExpression }.toTypedArray()
-            }.toTypedArray()
-        val results = simpleMath.tensor(values).map { it.toResult() }.toTypedArray()
-        results
+        val v1 = this.state1.toResult() as ComplexExpressionVector
+        val v2 = this.state2.toResult() as ComplexExpressionVector
+        v1.tensor(v2, simpleMath.complexCalc).map { it.toResult() }.toTypedArray()
     }
-
     else -> throw Error("Unknown quantum state type: $this")
 }
 
